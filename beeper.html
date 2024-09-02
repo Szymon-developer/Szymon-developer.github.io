@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Interval Beeper</title>
+    <style>
+        /* Apply a dark theme with accent colors */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1f1f1f;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #f0f0f0;
+        }
+
+        .container {
+            background: #2b2b2b;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        h1 {
+            color: #f8b400;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            font-size: 14px;
+            color: #f0f0f0;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background-color: #3b3b3b;
+            color: #f0f0f0;
+            outline: none;
+        }
+
+        input[type="number"]:focus {
+            border-color: #f8b400;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin: 15px 5px;
+            border: none;
+            border-radius: 6px;
+            background-color: #f8b400;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button.stop {
+            background-color: #e94560;
+        }
+
+        button:hover {
+            background-color: #d49600;
+        }
+
+        button.stop:hover {
+            background-color: #d43f50;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #f0f0f0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Random Interval Beeper</h1>
+
+        <label for="minTime">Min Interval (seconds):</label>
+        <input type="number" id="minTime" value="0.5" step="0.1" min="0.1" max="10">
+
+        <label for="maxTime">Max Interval (seconds):</label>
+        <input type="number" id="maxTime" value="4" step="0.1" min="0.5" max="10">
+
+        <label for="freq">Beep Frequency (Hz):</label>
+        <input type="number" id="freq" value="1000" step="100" min="100" max="10000">
+
+        <label for="duration">Beep Duration (ms):</label>
+        <input type="number" id="duration" value="500" step="100" min="100" max="5000">
+
+        <button onclick="startBeeping()">Start</button>
+        <button class="stop" onclick="stopBeeping()">Stop</button>
+
+        <p id="status">Status: Stopped</p>
+    </div>
+
+    <audio id="beep-sound" src="https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-41945/zapsplat_vehicles_aircraft_call_bell_single_tone_44563.mp3"></audio>
+
+    <script>
+        let beeping = false;
+        let interval;
+
+        function startBeeping() {
+            if (!beeping) {
+                beeping = true;
+                document.getElementById("status").innerText = "Status: Beeping";
+                beepAtRandomIntervals();
+            }
+        }
+
+        function stopBeeping() {
+            beeping = false;
+            clearTimeout(interval);
+            document.getElementById("status").innerText = "Status: Stopped";
+        }
+
+        function beepAtRandomIntervals() {
+            if (beeping) {
+                const beepSound = document.getElementById("beep-sound");
+                const minTime = parseFloat(document.getElementById("minTime").value) * 1000;
+                const maxTime = parseFloat(document.getElementById("maxTime").value) * 1000;
+                const frequency = parseInt(document.getElementById("freq").value);
+                const duration = parseInt(document.getElementById("duration").value);
+
+                // Play the beep sound
+                beepSound.play();
+
+                const randomTime = Math.random() * (maxTime - minTime) + minTime;
+                interval = setTimeout(beepAtRandomIntervals, randomTime);
+            }
+        }
+    </script>
+</body>
+</html>
